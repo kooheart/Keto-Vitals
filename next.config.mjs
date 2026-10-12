@@ -22,6 +22,7 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  experimental: { serverActions: { bodySizeLimit: "6mb" } }, // product image uploads
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },

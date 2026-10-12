@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --font-sans: ui-sans-serif; --font-display: Georgia; }
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body { @apply bg-white text-ink-800 antialiased; font-family: var(--font-sans), system-ui, sans-serif; }
+  h1, h2, h3 { @apply text-ink-900; }
+  :focus-visible { @apply outline-none ring-2 ring-brand-600 ring-offset-2; }
+  @media (prefers-reduced-motion: reduce) { *, ::before, ::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+}
+
+/* Design-system primitives. Change colours in tailwind.config.ts, not here. */
+@layer components {
+  .container-page { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .btn { @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-brand-700 text-white hover:bg-brand-800 active:bg-brand-900; }
+  .btn-gold { @apply btn bg-gold-400 text-ink-900 hover:bg-gold-500; }
+  .btn-outline { @apply btn border border-ink-300 bg-white text-ink-800 hover:bg-ink-50; }
+  .btn-ghost { @apply btn text-ink-700 hover:bg-ink-100; }
+  .btn-danger { @apply btn bg-red-600 text-white hover:bg-red-700; }
+  .btn-sm { @apply min-h-[36px] px-3 py-1.5 text-xs; }
+  .input { @apply block min-h-[44px] w-full rounded-lg border border-ink-300 bg-white px-3.5 py-2 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/30 disabled:bg-ink-50; }
+  .input[aria-invalid="true"] { @apply border-red-500 focus:ring-red-500/30; }
+  .label { @apply mb-1.5 block text-sm font-medium text-ink-800; }
+  .field-error { @apply mt-1 text-xs text-red-600; }
+  .card { @apply rounded-xl border border-ink-100 bg-white shadow-card; }
+  .chip { @apply inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-800; }
+  .skeleton { @apply animate-pulse rounded-md bg-ink-100; }
+  .prose-kv p { @apply mb-3 leading-relaxed; }
+  .prose-kv h2 { @apply mb-2 mt-6 text-lg font-semibold; }
+  .prose-kv ul { @apply mb-3 list-disc pl-5; }
+  .sr-only-focusable:not(:focus) { @apply sr-only; }
+}

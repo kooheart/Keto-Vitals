@@ -5,6 +5,7 @@ import { badRequest } from "@/lib/errors";
 import { placeOrder } from "@/lib/orders";
 import { currentCart } from "@/lib/cart-session";
 import { addressSchema, emailSchema, phoneSchema } from "@/lib/validation";
+import { orderAccessToken } from "@/lib/order-access";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 const schema = z.object({
@@ -28,5 +29,5 @@ export const POST = route(async (req) => {
     const count = await db.address.count({ where: { userId: user.id } });
     if (count < 10) await db.address.create({ data: { ...input.address, phone: input.address.phone, userId: user.id, isDefault: count === 0 } });
   }
-  return { orderId: res.order.id, number: res.order.number, status: res.order.status, duplicate: res.duplicate, razorpay: res.razorpay };
+  return { orderId: res.order.id, number: res.order.number, token: orderAccessToken(res.order.number), status: res.order.status, duplicate: res.duplicate, razorpay: res.razorpay };
 });
