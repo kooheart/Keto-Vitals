@@ -26,7 +26,7 @@ test("category page: filters, sort and shareable URL", async ({ page }) => {
   const all = await page.getByTestId("product-card").count();
   expect(all).toBeGreaterThan(3);
   await page.goto("/category/exotic-teas?sort=price-asc&inStock=1&tags=caffeine-free");
-  const prices = await page.getByTestId("product-card").locator("span.text-lg").allInnerTexts();
+  const prices = await page.locator('[data-testid="product-card"]:visible span.text-lg').allInnerTexts();
   const nums = prices.map((p) => Number(p.replace(/[^\d.]/g, "")));
   expect(nums.length).toBeGreaterThan(0);
   expect(nums, JSON.stringify(prices)).toEqual([...nums].sort((a, b) => a - b));
@@ -103,7 +103,7 @@ test("guest cart → coupon → COD checkout → confirmation → tracking", asy
   await page.getByLabel("Order number").fill(number);
   await page.getByLabel(/Email used/).fill("wrong@example.com");
   await page.getByRole("button", { name: "Track order" }).click();
-  await expect(page.getByRole("alert")).toContainText("couldn’t find");
+  await expect(page.getByText("We couldn’t find an order with those details.")).toBeVisible();
   await page.getByLabel(/Email used/).fill("guest@example.com");
   await page.getByRole("button", { name: "Track order" }).click();
   await page.waitForURL(/\/order\//);
