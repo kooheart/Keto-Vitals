@@ -32,7 +32,7 @@ test("category page: filters, sort and shareable URL", async ({ page }) => {
   expect(nums, JSON.stringify(prices)).toEqual([...nums].sort((a, b) => a - b));
   await expect(page.getByTestId("result-count").first()).toContainText("product");
   await page.goto("/category/exotic-teas?minPrice=99999");
-  await expect(page.getByTestId("empty-state")).toBeVisible();
+  await expect(page.locator('[data-testid="empty-state"]:visible')).toBeVisible();
 });
 
 test("search, suggestions and no-results state", async ({ page }) => {
@@ -43,7 +43,7 @@ test("search, suggestions and no-results state", async ({ page }) => {
   await expect(page).toHaveURL(/search\?q=darj/);
   await expect(page.getByTestId("product-card").first()).toContainText("Darjeeling");
   await page.goto("/search?q=zzzzqqq");
-  await expect(page.getByTestId("empty-state")).toContainText("No products match");
+  await expect(page.locator('[data-testid="empty-state"]:visible')).toContainText("No products match");
 });
 
 test("product page: variants, pincode check, SEO data", async ({ page }) => {
@@ -68,7 +68,7 @@ test("product page: variants, pincode check, SEO data", async ({ page }) => {
 
 test("out-of-stock variant cannot be added", async ({ page }) => {
   await page.goto("/product/keto-ketone-salts-lemon");
-  await expect(page.getByTestId("stock")).toHaveText("Out of stock");
+  await expect(page.locator('[data-testid="stock"]:visible')).toHaveText("Out of stock");
   await expect(page.locator('[data-testid="add-to-cart"]:visible')).toBeDisabled();
 });
 
