@@ -60,7 +60,7 @@ test("admin: place order as customer, then manage it end-to-end", async ({ page,
   await page.reload();
   await page.getByLabel("New status").selectOption("SHIPPED");
   await page.getByRole("button", { name: "Update order" }).click();
-  await expect(page.getByRole("alert")).toContainText("tracking number"); // server rule
+  await expect(page.getByText("Enter a tracking number before marking as shipped.")).toBeVisible(); // server rule
   await page.getByLabel("Carrier").fill("Delhivery");
   await page.getByLabel("Tracking number").fill("DL0001");
   await page.getByRole("button", { name: "Update order" }).click();
@@ -83,7 +83,7 @@ test("admin: place order as customer, then manage it end-to-end", async ({ page,
   await page.getByRole("button", { name: "Create coupon" }).click();
   await expect(page.getByText("Coupon saved")).toBeVisible();
   await page.goto("/admin/products/new");
-  await page.getByLabel("Name").fill("E2E Test Product");
+  await page.getByLabel("Name", { exact: true }).fill("E2E Test Product");
   await page.getByLabel("Category").selectOption({ label: "Keto Snacks & Sweeteners" });
   await page.getByRole("button", { name: "Create product" }).click();
   await page.waitForURL(/\/admin\/products\/.+created=1/);

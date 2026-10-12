@@ -26,6 +26,7 @@ test("category page: filters, sort and shareable URL", async ({ page }) => {
   const all = await page.getByTestId("product-card").count();
   expect(all).toBeGreaterThan(3);
   await page.goto("/category/exotic-teas?sort=price-asc&inStock=1&tags=caffeine-free");
+  await page.locator('[data-testid="product-card"]:visible').first().waitFor();
   const prices = await page.locator('[data-testid="product-card"]:visible span.text-lg').allInnerTexts();
   const nums = prices.map((p) => Number(p.replace(/[^\d.]/g, "")));
   expect(nums.length).toBeGreaterThan(0);
@@ -127,6 +128,7 @@ test("account: register merges guest cart; wishlist; address; login/logout", asy
   // wishlist
   await page.goto("/product/darjeeling-green-tea");
   await page.getByRole("button", { name: /Add to wishlist/ }).first().click();
+  await expect(page.getByText("Saved to your wishlist")).toBeVisible(); // wait for the API call to finish
   await page.goto("/wishlist");
   await expect(page.getByTestId("product-card")).toHaveCount(1);
   // address book
