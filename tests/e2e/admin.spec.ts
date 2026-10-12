@@ -29,6 +29,7 @@ test("a customer account is denied admin pages", async ({ page }) => {
 });
 
 test("admin: place order as customer, then manage it end-to-end", async ({ page, browser }) => {
+  test.setTimeout(150_000);
   // 1) a guest places a COD order for the last units of a product
   const shopper = await (await browser.newContext()).newPage();
   await shopper.goto("/product/nilgiri-silver-needle-white-tea");

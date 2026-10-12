@@ -15,7 +15,7 @@ test("homepage renders key sections", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByTestId("announcement")).toContainText("Free shipping");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  for (const h of ["Shop by category", "Best sellers", "New arrivals", "Featured collections"]) await expect(page.getByRole("heading", { name: h })).toBeVisible();
+  for (const h of ["Shop by category", "Best sellers", "New arrivals", "Featured collections"]) await expect(page.getByRole("heading", { name: h, exact: true })).toBeVisible();
   await expect(page.getByRole("contentinfo")).toContainText("Customer service");
   expect(await page.getByTestId("product-card").count()).toBeGreaterThan(8);
 });
@@ -29,8 +29,8 @@ test("category page: filters, sort and shareable URL", async ({ page }) => {
   const prices = await page.getByTestId("product-card").locator("span.text-lg").allInnerTexts();
   const nums = prices.map((p) => Number(p.replace(/[^\d.]/g, "")));
   expect(nums.length).toBeGreaterThan(0);
-  expect(nums).toEqual([...nums].sort((a, b) => a - b));
-  await expect(page.getByTestId("result-count")).toContainText("product");
+  expect(nums, JSON.stringify(prices)).toEqual([...nums].sort((a, b) => a - b));
+  await expect(page.getByTestId("result-count").first()).toContainText("product");
   await page.goto("/category/exotic-teas?minPrice=99999");
   await expect(page.getByTestId("empty-state")).toBeVisible();
 });
@@ -92,7 +92,7 @@ test("guest cart → coupon → COD checkout → confirmation → tracking", asy
   await page.waitForURL(/\/order\/KV-/);
   await expect(page.getByTestId("order-number")).toBeVisible();
   const number = await page.getByTestId("order-number").innerText();
-  await expect(page.getByText("Cash on Delivery")).toBeVisible();
+  await expect(page.getByText("Cash on Delivery · Pay on delivery")).toBeVisible();
   // order page is not accessible without the signed token
   const bare = await page.request.get(`/order/${number}`);
   expect(bare.status()).toBe(404);
@@ -117,7 +117,7 @@ test("account: register merges guest cart; wishlist; address; login/logout", asy
   await page.getByLabel("Email", { exact: true }).fill(`meera${Date.now()}@example.com`);
   await page.getByLabel("Password").fill("short");
   await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page.getByRole("alert").first()).toContainText("at least 10");
+  await expect(page.getByText("Use at least 10 characters")).toBeVisible();
   await page.getByLabel("Password").fill("Sup3rSecret99");
   await page.getByRole("button", { name: "Create account" }).click();
   await page.waitForURL("/");
