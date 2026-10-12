@@ -31,9 +31,9 @@ test("a customer account is denied admin pages", async ({ page }) => {
 test("admin: place order as customer, then manage it end-to-end", async ({ page, browser }) => {
   test.setTimeout(150_000);
   // 1) a guest places a COD order for the last units of a product
-  const shopper = await (await browser.newContext()).newPage();
+  const shopper = await (await browser.newContext({ baseURL: test.info().project.use.baseURL })).newPage();
   await shopper.goto("/product/nilgiri-silver-needle-white-tea");
-  await shopper.getByTestId("add-to-cart").click();
+  await shopper.locator('[data-testid="add-to-cart"]:visible').click();
   await expect(shopper.getByTestId("cart-count")).toHaveText("1");
   await shopper.goto("/checkout");
   await shopper.getByLabel("Email", { exact: true }).fill("buyer@example.com");

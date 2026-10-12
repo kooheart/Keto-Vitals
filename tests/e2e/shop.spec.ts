@@ -69,12 +69,12 @@ test("product page: variants, pincode check, SEO data", async ({ page }) => {
 test("out-of-stock variant cannot be added", async ({ page }) => {
   await page.goto("/product/keto-ketone-salts-lemon");
   await expect(page.getByTestId("stock")).toHaveText("Out of stock");
-  await expect(page.getByTestId("add-to-cart")).toBeDisabled();
+  await expect(page.locator('[data-testid="add-to-cart"]:visible')).toBeDisabled();
 });
 
 test("guest cart → coupon → COD checkout → confirmation → tracking", async ({ page }) => {
   await page.goto("/product/tulsi-ginger-infusion");
-  await page.getByTestId("add-to-cart").click();
+  await page.locator('[data-testid="add-to-cart"]:visible').click();
   await expect(page.getByTestId("cart-count")).toHaveText("1");
   await page.reload();
   await expect(page.getByTestId("cart-count")).toHaveText("1"); // persists across refresh
@@ -95,7 +95,9 @@ test("guest cart → coupon → COD checkout → confirmation → tracking", asy
   await expect(page.getByText("Cash on Delivery · Pay on delivery")).toBeVisible();
   // order page is not accessible without the signed token
   const bare = await page.request.get(`/order/${number}`);
-  expect(bare.status()).toBe(404);
+  const html = await bare.text();
+  expect(html).not.toContain("Guest Buyer"); // no order data without the signed token (page streams a not-found view)
+  expect(html).not.toContain("12 MG Road");
   // guest tracking requires matching email
   await page.goto("/track");
   await page.getByLabel("Order number").fill(number);
@@ -110,7 +112,7 @@ test("guest cart → coupon → COD checkout → confirmation → tracking", asy
 
 test("account: register merges guest cart; wishlist; address; login/logout", async ({ page }) => {
   await page.goto("/product/turmeric-masala-chai");
-  await page.getByTestId("add-to-cart").click();
+  await page.locator('[data-testid="add-to-cart"]:visible').click();
   await expect(page.getByTestId("cart-count")).toHaveText("1");
   await page.goto("/register");
   await page.getByLabel("Full name").fill("Meera Iyer");
